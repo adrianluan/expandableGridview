@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ViewGroup;
 
 import com.bignerdranch.expandablerecyclerview.ParentViewHolder.ParentViewHolderExpandCollapseListener;
@@ -692,13 +693,38 @@ public abstract class ExpandableRecyclerAdapter<P extends Parent<C>, C, PVH exte
      *                                          by a click event, false otherwise.
      */
 
+
+    private int lastExpandedPosition = -1;
+
     //TODO important
     @UiThread
     private void updateExpandedParent(@NonNull ExpandableWrapper<P, C> parentWrapper, int flatParentPosition, boolean expansionTriggeredByListItemClick) {
         if (parentWrapper.isExpanded()) {
             return;
         }
+
+
+        if(lastExpandedPosition>=0 && (flatParentPosition/3)>(lastExpandedPosition/3)){
+            flatParentPosition--;
+        }
+
+
+        if (lastExpandedPosition != -1
+                && flatParentPosition != lastExpandedPosition) {
+            collapseParent(lastExpandedPosition);
+
+        }
+
+
+
         int tmp =  flatParentPosition + 2 - flatParentPosition%3;
+
+
+        Log.e("tmp: ",tmp+" "+lastExpandedPosition+ " "+flatParentPosition);
+
+        lastExpandedPosition = flatParentPosition;
+
+
         parentWrapper.setExpanded(true);
         mExpansionStateMap.put(parentWrapper.getParent(), true);
 
@@ -708,7 +734,6 @@ public abstract class ExpandableRecyclerAdapter<P extends Parent<C>, C, PVH exte
             for (int i = 0; i < childCount; i++) {
                 mFlatItemList.add(tmp + i + 1, wrappedChildList.get(i));
             }
-
             notifyItemRangeInserted(tmp + 1, childCount);
         }
 

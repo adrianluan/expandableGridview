@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         List<Book> bookList = new ArrayList<>();
-        for(char i = 'a'; i < 'h'; i++){
+        for(char i = 'a'; i < 'z'; i++){
                 List<Detail> list2 = new ArrayList<>();
                 list2.add(new Detail(i+"","Desc: This is a great book"));
                 bookList.add(new Book(i+"", list2));
@@ -37,24 +37,10 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         mAdapter = new BookAdapter(this, bookList);
         mAdapter.setExpandCollapseListener(new ExpandableRecyclerAdapter.ExpandCollapseListener() {
-            private int lastExpandedPosition = -1;
+
             @UiThread
             @Override
             public void onParentExpanded(int parentPosition) {
-                Toast.makeText(MainActivity.this,
-                        lastExpandedPosition+" "+parentPosition,
-                        Toast.LENGTH_SHORT)
-                        .show();
-                if (lastExpandedPosition != -1
-                        && parentPosition != lastExpandedPosition) {
-                    mAdapter.collapseParent(lastExpandedPosition);
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                lastExpandedPosition = parentPosition;
 
 
             }
